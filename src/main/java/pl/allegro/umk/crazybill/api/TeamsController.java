@@ -6,23 +6,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.allegro.umk.crazybill.api.dto.BillDto;
 import pl.allegro.umk.crazybill.api.dto.TeamDto;
-import pl.allegro.umk.crazybill.domain.Bill;
 import pl.allegro.umk.crazybill.domain.Team;
-import pl.allegro.umk.crazybill.repository.BillsRepository;
 import pl.allegro.umk.crazybill.repository.TeamsRepository;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 @RestController
 public class TeamsController {
 
     private final TeamsRepository teamsRepository;
+    protected final Logger log = Logger.getLogger(getClass().getName());
 
     @Autowired
     public TeamsController(TeamsRepository teamsRepository) {
@@ -34,11 +33,19 @@ public class TeamsController {
             path = "/teams",
             produces = "application/json"
     )
-    public List<TeamDto> getTeams() {
+    public List<TeamDto> getTeams() throws InterruptedException {
+        long tStart = System.currentTimeMillis();
+        log.info(String.format("get teams start [%s]", tStart));
         List<TeamDto> teamDtoList = Lists.newArrayList();
         teamsRepository.findAll().forEach(team -> {
             teamDtoList.add(team.toDto());
         });
+        TimeUnit.SECONDS.sleep(1);
+
+        long tEnd = System.currentTimeMillis();
+        long tDelta = tEnd - tStart;
+        log.info(String.format("get teams end: [%s]", tEnd));
+        log.info(String.format("took: [%s ms]", tDelta));
         return teamDtoList;
     }
 
