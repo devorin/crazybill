@@ -2,8 +2,10 @@ package pl.allegro.umk.crazybill.api;
 
 
 import com.google.common.collect.Lists;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.allegro.umk.crazybill.api.dto.TeamDto;
@@ -15,7 +17,6 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
 @RestController
 public class TeamsController {
@@ -26,6 +27,15 @@ public class TeamsController {
     @Autowired
     public TeamsController(TeamsRepository teamsRepository) {
         this.teamsRepository = teamsRepository;
+    }
+
+    @RequestMapping(
+            method = RequestMethod.GET,
+            path = "/"
+    )
+    @ResponseStatus( HttpStatus.ACCEPTED )
+    public void home() {
+        log.info("Start app");
     }
 
     @RequestMapping(
